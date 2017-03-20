@@ -1,6 +1,33 @@
 import requests
 import time
 
+genre_list_raw = '''
+Jazz
+Hip-hop
+Rap
+Blues
+R&B
+Rock
+Folk
+Pop
+Electronic
+Classical
+Punk
+Country
+Alternative
+Metal
+Dubstep
+Techno
+Reggae
+Instrumental
+K-pop
+Emo
+Crunk
+Raggaeton
+'''
+
+genre_list = list(map(lambda x: x.strip().lower(), genre_list_raw.split()))
+
 def genre(artist, song, genre_list):
     api_key = 'b45db8136c5b56cfa6aa2b77fe6c3a61'
     url = 'http://ws.audioscrobbler.com/2.0/?method=track.gettoptags&artist='
@@ -31,4 +58,7 @@ def spotify_genre(artist, genre_list):
                 return genre
     return 'NULL'
 
-print(genre('ed sheeran','shape of you',['pop']))
+print(genre('Ed Sheeran','Shape Of You', genre_list)) #pop
+print(genre('Migos','Bad and Boujee', genre_list)) #rap
+print(genre('Marian Hill','Down', genre_list)) #electronic
+print(genre('Keith Urban','The Fighter', genre_list)) #country
