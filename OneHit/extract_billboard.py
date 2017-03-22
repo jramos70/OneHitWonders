@@ -104,7 +104,7 @@ with open ('top100_billboard.csv','w', encoding = 'utf-8') as f:
             #clean.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart', 'clean name', 'genre'])
             #dirty.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart'])
 
-            for weeks in range (10):   #number of weeks go here
+            for weeks in range (1):   #number of weeks go here
                 data = top100_scraper(str(date))
                 clean_data = extract_anchor_name(date)
                 #puts in songs from 1 - 100
@@ -124,5 +124,3 @@ with open ('top100_billboard.csv','w', encoding = 'utf-8') as f:
                 #update the date
                 d = d - datetime.timedelta(days=7)
                 date = d.strftime("%Y-%m-%d")
-
-
