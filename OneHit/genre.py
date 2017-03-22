@@ -62,3 +62,5 @@ def spotify_genre(artist):
 # print(genre('Migos','Bad and Boujee', genre_list)) #rap
 # print(genre('Marian Hill','Down', genre_list)) #electronic
 # print(genre('Keith Urban','The Fighter', genre_list)) #country
+
+

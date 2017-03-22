@@ -124,3 +124,5 @@ with open ('top100_billboard.csv','w', encoding = 'utf-8') as f:
                 #update the date
                 d = d - datetime.timedelta(days=7)
                 date = d.strftime("%Y-%m-%d")
+
+
