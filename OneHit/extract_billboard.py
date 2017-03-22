@@ -1,5 +1,5 @@
 import urllib.request as url
-import sqlite3, re, requests, csv, datetime
+import sqlite3, re, requests, csv, datetime, genre as genre
 from bs4 import BeautifulSoup
 
 #Scrapes billboard for song name, artist, last week's position, peak position, and weeks on chart
@@ -96,34 +96,30 @@ with open ('top100_billboard.csv','w', encoding = 'utf-8') as f:
             dirty = csv.writer(dirty_file)
             
             #pick the date here. I selected March 4, 2017 as the first on
-            d = datetime.datetime.strptime("2017-03-04", "%Y-%m-%d")
+            d = datetime.datetime.strptime("2000-02-05", "%Y-%m-%d")
             date = d.strftime("%Y-%m-%d")
             
             #create row headers for each file
-            writer.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart'])
-            clean.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart', 'clean name'])
-            dirty.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart'])
-            duplicates = set()
+            writer.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart', 'genre'])
+            #clean.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart', 'clean name', 'genre'])
+            #dirty.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart'])
 
-            for weeks in range (1000):   #number of weeks go here
+            for weeks in range (10):   #number of weeks go here
                 data = top100_scraper(str(date))
                 clean_data = extract_anchor_name(date)
                 #puts in songs from 1 - 100
                 j = 0
                 for i in range(100):
-                    writer.writerow([date, i+1, data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]])
-
                     #also put it into clean or dirty csv file, depending on what is needed
                     if data[i][5] == True:
-                        clean.writerow([date, i+1, data[i][0], data[i][1], data[i][2], data[i][3], data[i][4], clean_data[j]])
+                        genr = genre.genre(clean_data[j], data[i][0])
                         j = j+1
                     else:
-                        if data[i][5] == 'DJ Suede The Remix God':
-                            print("WTF")
-                        if data[i][1] not in duplicates:
-                            dirty.writerow([date, i+1, data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]])
-                            duplicates.add(data[i][1])
-                            print ('adding', data[i][1])
+                        genr = genre.genre(data[i][1], data[i][0])
+                    
+                    writer.writerow([date, i+1, data[i][0], data[i][1], data[i][2], data[i][3], data[i][4], genr])
+
+                    
                         
                 #update the date
                 d = d - datetime.timedelta(days=7)
