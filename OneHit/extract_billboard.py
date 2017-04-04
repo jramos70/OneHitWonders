@@ -88,39 +88,32 @@ def extract_anchor_name(date):
 
 
 #create csv file for total, clean, and dirty 
-with open ('top100_billboard.csv','w', encoding = 'utf-8') as f:
+with open ('top100_billboard2.csv','w', encoding = 'utf-8') as f:
     writer = csv.writer(f)
-    with open ('top100_clean.csv', 'w', encoding = 'utf-8') as clean_file:
-        clean = csv.writer(clean_file)
-        with open ('top100_dirty.csv', 'w', encoding = 'utf-8') as dirty_file:
-            dirty = csv.writer(dirty_file)
             
-            #pick the date here. I selected March 4, 2017 as the first on
-            d = datetime.datetime.strptime("2000-02-05", "%Y-%m-%d")
-            date = d.strftime("%Y-%m-%d")
+    #pick the date here. I selected March 4, 2017 as the first on
+    d = datetime.datetime.strptime("2004-10-02", "%Y-%m-%d")
+    date = d.strftime("%Y-%m-%d")
             
-            #create row headers for each file
-            writer.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart', 'genre'])
-            #clean.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart', 'clean name', 'genre'])
-            #dirty.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart'])
+    #create row headers for each file
+    writer.writerow(['date', 'position', 'songname', 'artist', 'last week', 'peak position', 'weeks on chart', 'genre'])
 
-            for weeks in range (1):   #number of weeks go here
-                data = top100_scraper(str(date))
-                clean_data = extract_anchor_name(date)
-                #puts in songs from 1 - 100
-                j = 0
-                for i in range(100):
-                    #also put it into clean or dirty csv file, depending on what is needed
-                    if data[i][5] == True:
-                        genr = genre.genre(clean_data[j], data[i][0])
-                        j = j+1
-                    else:
-                        genr = genre.genre(data[i][1], data[i][0])
-                    
-                    writer.writerow([date, i+1, data[i][0], data[i][1], data[i][2], data[i][3], data[i][4], genr])
-
-                    
-                        
-                #update the date
-                d = d - datetime.timedelta(days=7)
-                date = d.strftime("%Y-%m-%d")
+    for weeks in range (400):   #number of weeks go here
+        data = top100_scraper(str(date))
+        clean_data = extract_anchor_name(date)
+        #puts in songs from 1 - 100
+        j = 0
+        for i in range(100):
+            #also put it into clean or dirty csv file, depending on what is needed
+            if data[i][5] == True:
+                genr = genre.genre(clean_data[j], data[i][0])
+                j = j+1
+            else:
+                genr = genre.genre(data[i][1], data[i][0]) 
+            
+            writer.writerow([date, i+1, data[i][0], data[i][1], data[i][2], data[i][3], data[i][4], genr])
+         
+        #update the date
+        d = d - datetime.timedelta(days=7)
+        date = d.strftime("%Y-%m-%d")
+        print(weeks)
