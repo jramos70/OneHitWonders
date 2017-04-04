@@ -1,6 +1,6 @@
 import requests
 import time
-
+import json
 genre_list_raw = '''
 Jazz
 Hip-hop
@@ -36,8 +36,11 @@ def genre(artist, song):
     songstr = '+'.join(song.lower().split())
     url += artstr + '&track=' + songstr + '&autocorrect=1' \
         + '&api_key=' + api_key + '&format=json'
-    j = requests.get(url).json()
-    time.sleep(0.2)
+    try:
+        j = requests.get(url).json()
+    except json.decoder.JSONDecodeError:
+        return 'NULL'
+    time.sleep(0.22)
     if ('toptags' not in j) or (len(j['toptags']['tag']) == 0):
         return spotify_genre(artstr)
     for tag in map(lambda x: x['name'].lower(), j['toptags']['tag']):
@@ -49,6 +52,11 @@ def genre(artist, song):
 def spotify_genre(artist):
     url = 'https://api.spotify.com/v1/search?q=' + artist + '&type=artist'
     j = requests.get(url).json()
+    try:
+        len(j['artists']['items']) == 0
+    except KeyError:
+        return 'NULL'
+
     if len(j['artists']['items']) == 0:
         return 'NULL'
     if len(j['artists']['items'][0]['genres']) == 0:
