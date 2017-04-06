@@ -1,5 +1,5 @@
 import csv
-import itertools
+import editdistance
 import re
 
 hits = {}
@@ -9,7 +9,9 @@ with open ('oneWiki.csv', 'r', encoding = 'latin1') as r:
     reader = csv.reader(r)
     next(reader, None)
     for row in reader:
-        song = row[1][1:-1]
+        song = row[1]
+        song = song.replace("(Remix)", "")
+        song = song[1:-1]
         peak = row[2]
         date = row[3].split("-")
         month = str(month_dict[date[1]])
@@ -22,14 +24,17 @@ with open('top100_billboard.csv', 'r', encoding = 'utf-8') as r:
     next(reader, None)
     for row in reader:
         peak = row[5]
+        song = row[2]
         date = row[0].split("/")
         month = date[0]
         day = date[1]
         year = date[2]
         check = (peak, month, day, year)
         if check in hits:
-            one_hit_checker[(row[2], row[3])] = "True"
-    
+            edit_distance = editdistance.eval(song, hits[check])
+            if edit_distance <= 5:
+                one_hit_checker[(song, row[3])] = "True"
+
 with open ('one_hit_wonder.csv','w', encoding = 'utf-8') as f:
     with open('top100_billboard.csv', 'r', encoding = 'utf-8') as r:
         writer = csv.writer(f)
