@@ -8,7 +8,7 @@ with open("one_hit_wonder.csv", 'r', encoding = 'latin1') as file_reader:
     vevo = {}
     isVevo = True
     for row in reader:
-        if row[8].lower() == 'false' or row[8].lower() == 'true':
+        if row[8].lower() == 'true':# or row[8].lower() == 'false':
         #if row[7].lower() == 'pop' and row[8].lower() == 'false':
             if (row[2], row[3]) not in hits:
                 hits[(row[2], row[3])] = [row[1]]
@@ -38,9 +38,10 @@ with open("one_hit_wonder.csv", 'r', encoding = 'latin1') as file_reader:
     matrix = [0 for i in range(100)]
     for song in hits:
         x = len(hits[song])
-        # if x == 20:
-        #     pyplot.plot(range(1,21), hits[song])
-        matrix[x] += 1
+        for pos in hits[song]:
+            if int(pos) <= 40:
+                matrix[x] += 1
+                break
 
     matrix2 = [0 for i in range(100)]
     for song in vevo:
