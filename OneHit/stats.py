@@ -3,11 +3,19 @@ from matplotlib import pyplot, dates
 
 with open("one_hit_wonder.csv", 'r', encoding = 'latin1') as file_reader:
     reader = csv.reader(file_reader)
+    next(reader, None)
     hits = {}
+    all_songs = {}
     pre_vevo = {}
     vevo = {}
     isVevo = True
     for row in reader:
+
+        if (row[2], row[3]) not in all_songs:
+            all_songs[(row[2], row[3])] = [row[1]]
+        else:
+            all_songs[(row[2], row[3])].insert(0, row[1])
+
         if row[8].lower() == 'true':# or row[8].lower() == 'false':
         #if row[7].lower() == 'pop' and row[8].lower() == 'false':
             if (row[2], row[3]) not in hits:
@@ -17,7 +25,7 @@ with open("one_hit_wonder.csv", 'r', encoding = 'latin1') as file_reader:
             
             if (row[0] == '12/5/09'):
                 isVevo = False
-            
+
             if isVevo:
                 if (row[2], row[3]) not in vevo:
                     vevo[(row[2], row[3])] = [row[1]]
@@ -35,14 +43,34 @@ with open("one_hit_wonder.csv", 'r', encoding = 'latin1') as file_reader:
     print("vevo", len(vevo))
     print("pre_vevo", len(pre_vevo))
     print ("hits", len(hits))
-    matrix = [0 for i in range(100)]
+    matrix = [0 for i in range(70)]
     for song in hits:
-        x = len(hits[song])
+        x = 0
         for pos in hits[song]:
             if int(pos) <= 40:
-                matrix[x] += 1
-                break
+                x += 1
+        matrix[x] += 1
+    matrix = [i/sum(matrix) for i in matrix]
+    # matrix4 = [0 for i in range(100)]
+    # for song in hits:
+    #     x = 0
+    #     for pos in hits[song]:
+    #         if int(pos) <= 40:
+    #             x += 1
+    #         else:
+    #             break
+    #     matrix4[x] += 1
 
+    matrix4 = [0 for i in range(70)]
+    for song in all_songs:
+        x = 0
+        for pos in all_songs[song]:
+            if int(pos) <= 40:
+                x += 1
+        if x > 0:
+            matrix4[x] += 1
+
+    matrix4 = [i/sum(matrix4) for i in matrix4]
     matrix2 = [0 for i in range(100)]
     for song in vevo:
         x = len(vevo[song])
@@ -94,6 +122,15 @@ for i in range(len(matrix3)):
 # print("average pre-vevo: ", val2/len(pre_vevo))
 
 
-pyplot.plot(range(100), matrix)
+pyplot.plot(range(70), matrix, color = '#ffa500')
+pyplot.plot(range(70), matrix4, color = '#808080')
+# pyplot.fill_between(range(70), matrix, alpha = .8, color = 'b')
+# pyplot.fill_between(range(70), matrix4, alpha = .8, color = 'g')
+
 # pyplot.gca().invert_yaxis()
+pyplot.xlabel('# of weeks')
+pyplot.ylabel('% of songs')
+# pyplot.yscale('log')
+pyplot.legend(['one hit wonders', 'all wonders'], loc='upper right')
+pyplot.suptitle('Lasting Time for One Hit Wonders vs All Wonders', fontsize=20)
 pyplot.show()
